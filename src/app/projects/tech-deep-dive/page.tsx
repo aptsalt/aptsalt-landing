@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "54 deep-dives across 6 categories — because understanding compounds and surface-level knowledge decays.",
   accentClass: "accent-amber",
   accentColor: "#F59E0B",
-  heroImage: "/images/tech-deep-dive-hero.jpg",
+  heroImage: "/aptsalt-landing/images/tech-deep-dive-hero.jpg",
   narrative: {
     hook: "54 deep-dives. Because understanding compounds.",
     problem:

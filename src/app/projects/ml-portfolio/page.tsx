@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "Three production-grade ML systems built from scratch in PyTorch — because understanding comes from building, not importing.",
   accentClass: "accent-violet",
   accentColor: "#8B5CF6",
-  heroImage: "/images/ml-portfolio-hero.jpg",
+  heroImage: "/aptsalt-landing/images/ml-portfolio-hero.jpg",
   narrative: {
     hook: "Everyone fine-tunes. Very few build from the ground up.",
     problem:

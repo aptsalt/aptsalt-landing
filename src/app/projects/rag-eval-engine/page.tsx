@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "Most RAG systems guess if they're working. This one measures. Every query is scored for faithfulness, relevance, and hallucination rate.",
   accentClass: "accent-emerald",
   accentColor: "#10B981",
-  heroImage: "/images/rag-eval-engine-hero.jpg",
+  heroImage: "/aptsalt-landing/images/rag-eval-engine-hero.jpg",
   narrative: {
     hook: "If you can't measure retrieval quality, you don't have a RAG system — you have a hope system.",
     problem:

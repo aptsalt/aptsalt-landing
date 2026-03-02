@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "An autonomous development copilot that doesn't just suggest code — it orchestrates entire engineering workflows through Claude and MCP.",
   accentClass: "accent-orange",
   accentColor: "#F97316",
-  heroImage: "/images/claude-pilot-hero.jpg",
+  heroImage: "/aptsalt-landing/images/claude-pilot-hero.jpg",
   narrative: {
     hook: "What if your IDE didn't just autocomplete — what if it thought?",
     problem:

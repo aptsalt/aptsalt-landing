@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "γνῶθι σεαυτόν — Know thyself. An AI system that builds a knowledge graph of you, surfacing patterns you can't see alone.",
   accentClass: "accent-cyan",
   accentColor: "#06B6D4",
-  heroImage: "/images/nosce-hero.jpg",
+  heroImage: "/aptsalt-landing/images/nosce-hero.jpg",
   narrative: {
     hook: "The ancient Greeks carved it above the Oracle at Delphi. Two thousand years later, we still don't have good tools for it.",
     problem:

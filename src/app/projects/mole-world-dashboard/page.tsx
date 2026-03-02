@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "216 Claude sessions orchestrated into a film production studio — 3D globe, real-time analytics, and AI pipeline management.",
   accentClass: "accent-pink",
   accentColor: "#EC4899",
-  heroImage: "/images/mole-world-dashboard-hero.jpg",
+  heroImage: "/aptsalt-landing/images/mole-world-dashboard-hero.jpg",
   narrative: {
     hook: "216 Claude sessions made a film production studio.",
     problem:

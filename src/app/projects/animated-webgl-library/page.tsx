@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "86+ visual experiments in light and math — particles, fractals, audio-reactive shaders, and GPU-accelerated beauty.",
   accentClass: "accent-indigo",
   accentColor: "#6366F1",
-  heroImage: "/images/animated-webgl-library-hero.jpg",
+  heroImage: "/aptsalt-landing/images/animated-webgl-library-hero.jpg",
   narrative: {
     hook: "86+ visual experiments in light and math.",
     problem:

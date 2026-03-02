@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "One API endpoint. Five providers. The gateway routes every prompt to the optimal model — balancing cost, quality, and latency in real-time.",
   accentClass: "accent-blue",
   accentColor: "#3B82F6",
-  heroImage: "/images/llm-gateway-hero.jpg",
+  heroImage: "/aptsalt-landing/images/llm-gateway-hero.jpg",
   narrative: {
     hook: "Why choose one LLM provider when you can have all of them — and pay less?",
     problem:

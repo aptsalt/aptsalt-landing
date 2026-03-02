@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "Real-time Claude Code monitoring — WebSocket events, 3D canvas visualization, hook system, and full token observability.",
   accentClass: "accent-lime",
   accentColor: "#84CC16",
-  heroImage: "/images/claude-dashboard-hero.jpg",
+  heroImage: "/aptsalt-landing/images/claude-dashboard-hero.jpg",
   narrative: {
     hook: "See everything. Miss nothing.",
     problem:

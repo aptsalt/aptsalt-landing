@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "Scrape a design system. Fine-tune a model. Generate production UI code. All on one GPU, at $0/token.",
   accentClass: "accent-gold",
   accentColor: "#EAB308",
-  heroImage: "/images/enterprise-playground-hero.jpg",
+  heroImage: "/aptsalt-landing/images/enterprise-playground-hero.jpg",
   narrative: {
     hook: "What if your AI didn't just know how to write code — what if it knew your design system?",
     problem:

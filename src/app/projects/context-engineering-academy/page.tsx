@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "6 academies. 70+ modules. The discipline of shaping AI context — taught through interactive exercises and real-world patterns.",
   accentClass: "accent-teal",
   accentColor: "#14B8A6",
-  heroImage: "/images/context-engineering-academy-hero.jpg",
+  heroImage: "/aptsalt-landing/images/context-engineering-academy-hero.jpg",
   narrative: {
     hook: "6 academies. 70+ modules. Teaching what I learned.",
     problem:

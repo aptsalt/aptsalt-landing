@@ -10,7 +10,7 @@ const project: ProjectData = {
   tagline: "Five AI agents. One pipeline. Your entire job search — from profile analysis to interview prep — automated by a local LLM swarm.",
   accentClass: "accent-red",
   accentColor: "#EF4444",
-  heroImage: "/images/agenthire-hero.jpg",
+  heroImage: "/aptsalt-landing/images/agenthire-hero.jpg",
   narrative: {
     hook: "Job searching is a pipeline problem. So I built a pipeline.",
     problem:
