@@ -298,7 +298,7 @@ export default function Home() {
         <VideoBackground
           src={`${BASE}/videos/hero-prologue.mp4`}
           poster={`${BASE}/images/ml-portfolio-hero.jpg`}
-          opacity={0.12}
+          opacity={0.4}
         />
         <div className="absolute inset-0 grid-bg" />
 
@@ -378,7 +378,7 @@ export default function Home() {
       <section className="py-16 relative overflow-hidden">
         <VideoBackground
           src={`${BASE}/videos/hero-discuria.mp4`}
-          opacity={0.08}
+          opacity={0.3}
         />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <Reveal>
@@ -461,7 +461,7 @@ export default function Home() {
       <section className="py-16 relative overflow-hidden">
         <VideoBackground
           src={`${BASE}/videos/hero-stats.mp4`}
-          opacity={0.1}
+          opacity={0.35}
         />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -498,7 +498,7 @@ export default function Home() {
           >
             <VideoBackground
               src={`${BASE}/videos/hero-act-${actIndex + 1}.mp4`}
-              opacity={0.1}
+              opacity={0.35}
             />
 
             <ParallaxLayer speed={0.15} className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -674,7 +674,7 @@ export default function Home() {
       <section id="contact" className="py-24 relative overflow-hidden">
         <VideoBackground
           src={`${BASE}/videos/hero-epilogue.mp4`}
-          opacity={0.08}
+          opacity={0.3}
         />
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <Reveal>

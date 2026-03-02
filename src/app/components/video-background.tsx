@@ -10,10 +10,10 @@ export function VideoBackground({
   src,
   poster,
   className = "",
-  opacity = 0.15,
-  gradientFrom = "from-background/50",
-  gradientVia = "via-background/60",
-  gradientTo = "to-background/90",
+  opacity = 0.35,
+  gradientFrom = "from-background/20",
+  gradientVia = "via-background/30",
+  gradientTo = "to-background/70",
 }: {
   src: string;
   poster?: string;
