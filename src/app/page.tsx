@@ -30,6 +30,8 @@ import { ParallaxLayer } from "./components/parallax";
 import { VideoBackground } from "./components/video-background";
 import type { ReactNode } from "react";
 
+const BASE = "/aptsalt-landing";
+
 /* ============================================
    DATA
    ============================================ */
@@ -66,7 +68,7 @@ const acts: {
         accent: "#8B5CF6",
         icon: <Brain size={20} />,
         tags: ["PyTorch", "RLHF", "DPO", "PPO"],
-        heroImage: "/images/ml-portfolio-hero.jpg",
+        heroImage: `${BASE}/images/ml-portfolio-hero.jpg`,
       },
       {
         num: "02",
@@ -76,7 +78,7 @@ const acts: {
         accent: "#06B6D4",
         icon: <Search size={20} />,
         tags: ["Knowledge Graph", "NLP", "Analytics"],
-        heroImage: "/images/nosce-hero.jpg",
+        heroImage: `${BASE}/images/nosce-hero.jpg`,
       },
       {
         num: "03",
@@ -86,7 +88,7 @@ const acts: {
         accent: "#F59E0B",
         icon: <BookOpen size={20} />,
         tags: ["MDX", "54 Articles", "Interactive"],
-        heroImage: "/images/tech-deep-dive-hero.jpg",
+        heroImage: `${BASE}/images/tech-deep-dive-hero.jpg`,
       },
     ],
   },
@@ -104,7 +106,7 @@ const acts: {
         accent: "#10B981",
         icon: <BarChart3 size={20} />,
         tags: ["RAG", "Qdrant", "FastAPI", "MCP"],
-        heroImage: "/images/rag-eval-engine-hero.jpg",
+        heroImage: `${BASE}/images/rag-eval-engine-hero.jpg`,
       },
       {
         num: "05",
@@ -114,7 +116,7 @@ const acts: {
         accent: "#3B82F6",
         icon: <Route size={20} />,
         tags: ["Hono", "Redis", "PostgreSQL", "5 Providers"],
-        heroImage: "/images/llm-gateway-hero.jpg",
+        heroImage: `${BASE}/images/llm-gateway-hero.jpg`,
       },
       {
         num: "06",
@@ -124,7 +126,7 @@ const acts: {
         accent: "#84CC16",
         icon: <Activity size={20} />,
         tags: ["WebSocket", "Canvas 3D", "Real-time"],
-        heroImage: "/images/claude-dashboard-hero.jpg",
+        heroImage: `${BASE}/images/claude-dashboard-hero.jpg`,
       },
     ],
   },
@@ -142,7 +144,7 @@ const acts: {
         accent: "#EAB308",
         icon: <Building2 size={20} />,
         tags: ["QLoRA", "Dual-Model", "ChromaDB", "Playwright"],
-        heroImage: "/images/enterprise-playground-hero.jpg",
+        heroImage: `${BASE}/images/enterprise-playground-hero.jpg`,
       },
       {
         num: "08",
@@ -152,7 +154,7 @@ const acts: {
         accent: "#F97316",
         icon: <Compass size={20} />,
         tags: ["Claude", "MCP", "TypeScript", "Agents"],
-        heroImage: "/images/claude-pilot-hero.jpg",
+        heroImage: `${BASE}/images/claude-pilot-hero.jpg`,
       },
       {
         num: "09",
@@ -162,7 +164,7 @@ const acts: {
         accent: "#EF4444",
         icon: <Users size={20} />,
         tags: ["LangGraph", "Ollama", "Next.js 15", "MCP"],
-        heroImage: "/images/agenthire-hero.jpg",
+        heroImage: `${BASE}/images/agenthire-hero.jpg`,
       },
     ],
   },
@@ -179,7 +181,7 @@ const acts: {
         accent: "#6366F1",
         icon: <Sparkles size={20} />,
         tags: ["Three.js", "WebGL", "GLSL", "Audio"],
-        heroImage: "/images/animated-webgl-library-hero.jpg",
+        heroImage: `${BASE}/images/animated-webgl-library-hero.jpg`,
       },
       {
         num: "11",
@@ -189,7 +191,7 @@ const acts: {
         accent: "#EC4899",
         icon: <Globe2 size={20} />,
         tags: ["Three.js", "Supabase", "Real-time"],
-        heroImage: "/images/mole-world-dashboard-hero.jpg",
+        heroImage: `${BASE}/images/mole-world-dashboard-hero.jpg`,
       },
       {
         num: "12",
@@ -199,7 +201,7 @@ const acts: {
         accent: "#14B8A6",
         icon: <GraduationCap size={20} />,
         tags: ["MDX", "6 Academies", "Interactive"],
-        heroImage: "/images/context-engineering-academy-hero.jpg",
+        heroImage: `${BASE}/images/context-engineering-academy-hero.jpg`,
       },
     ],
   },
@@ -294,8 +296,8 @@ export default function Home() {
           ============================================ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <VideoBackground
-          src="/videos/hero-prologue.mp4"
-          poster="/images/ml-portfolio-hero.jpg"
+          src={`${BASE}/videos/hero-prologue.mp4`}
+          poster={`${BASE}/images/ml-portfolio-hero.jpg`}
           opacity={0.12}
         />
         <div className="absolute inset-0 grid-bg" />
@@ -375,7 +377,7 @@ export default function Home() {
           ============================================ */}
       <section className="py-16 relative overflow-hidden">
         <VideoBackground
-          src="/videos/hero-discuria.mp4"
+          src={`${BASE}/videos/hero-discuria.mp4`}
           opacity={0.08}
         />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -458,7 +460,7 @@ export default function Home() {
           ============================================ */}
       <section className="py-16 relative overflow-hidden">
         <VideoBackground
-          src="/videos/hero-stats.mp4"
+          src={`${BASE}/videos/hero-stats.mp4`}
           opacity={0.1}
         />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -495,7 +497,7 @@ export default function Home() {
             className="py-24 relative overflow-hidden"
           >
             <VideoBackground
-              src={`/videos/hero-act-${actIndex + 1}.mp4`}
+              src={`${BASE}/videos/hero-act-${actIndex + 1}.mp4`}
               opacity={0.1}
             />
 
@@ -671,7 +673,7 @@ export default function Home() {
           ============================================ */}
       <section id="contact" className="py-24 relative overflow-hidden">
         <VideoBackground
-          src="/videos/hero-epilogue.mp4"
+          src={`${BASE}/videos/hero-epilogue.mp4`}
           opacity={0.08}
         />
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
