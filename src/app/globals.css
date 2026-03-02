@@ -282,3 +282,67 @@ html {
   transform: translateY(-3px);
   box-shadow: 0 8px 30px -8px rgba(0, 0, 0, 0.08);
 }
+
+/* ============================================
+   ACT DIVIDER / CONNECTION TEXT
+   ============================================ */
+
+.act-connection {
+  position: relative;
+  padding: 4rem 0;
+}
+.act-connection::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+.act-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border) 20%, var(--border) 80%, transparent);
+}
+
+/* Floating keyframe for parallax objects */
+@keyframes floating-obj {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(calc(var(--float-amp, 20px) * -0.5)) rotate(2deg); }
+  50% { transform: translateY(calc(var(--float-amp, 20px) * -1)) rotate(0deg); }
+  75% { transform: translateY(calc(var(--float-amp, 20px) * -0.5)) rotate(-2deg); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.08; transform: scale(1); }
+  50% { opacity: 0.15; transform: scale(1.05); }
+}
+
+@keyframes scroll-hint {
+  0%, 100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(8px); opacity: 0.8; }
+}
+
+.animate-breathe { animation: breathe 8s ease-in-out infinite; }
+.animate-scroll-hint { animation: scroll-hint 2s ease-in-out infinite; }
+
+/* Light-themed atmospheric orbs (subtle warm tints) */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+}
+.orb-amber { background: radial-gradient(circle, rgba(245, 158, 11, 0.12), transparent 70%); }
+.orb-violet { background: radial-gradient(circle, rgba(139, 92, 246, 0.08), transparent 70%); }
+.orb-emerald { background: radial-gradient(circle, rgba(16, 185, 129, 0.08), transparent 70%); }
+.orb-rose { background: radial-gradient(circle, rgba(236, 72, 153, 0.08), transparent 70%); }
+
+/* Subtle grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(26, 26, 26, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 26, 26, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
