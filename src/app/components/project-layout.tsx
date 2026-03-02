@@ -102,7 +102,7 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
         </div>
 
         {project.heroImage && (
-          <div className="max-w-5xl mx-auto px-6 mt-12">
+          <div className="max-w-3xl mx-auto px-6 mt-12">
             <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border">
               <Image
                 src={project.heroImage}
