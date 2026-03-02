@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-red",
   accentColor: "#EF4444",
   heroImage: "/aptsalt-landing/images/agenthire-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/agenthire.png",
   narrative: {
     hook: "Job searching is a pipeline problem. So I built a pipeline.",
     problem:

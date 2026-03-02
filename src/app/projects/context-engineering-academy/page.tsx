@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-teal",
   accentColor: "#14B8A6",
   heroImage: "/aptsalt-landing/images/context-engineering-academy-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/context-engineering-academy.png",
   narrative: {
     hook: "6 academies. 70+ modules. Teaching what I learned.",
     problem:

@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-lime",
   accentColor: "#84CC16",
   heroImage: "/aptsalt-landing/images/claude-dashboard-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/claude-dashboard.png",
   narrative: {
     hook: "See everything. Miss nothing.",
     problem:

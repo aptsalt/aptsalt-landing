@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-indigo",
   accentColor: "#6366F1",
   heroImage: "/aptsalt-landing/images/animated-webgl-library-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/animated-webgl-library.png",
   narrative: {
     hook: "86+ visual experiments in light and math.",
     problem:

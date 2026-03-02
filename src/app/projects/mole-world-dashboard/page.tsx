@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-pink",
   accentColor: "#EC4899",
   heroImage: "/aptsalt-landing/images/mole-world-dashboard-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/mole-world-dashboard.png",
   narrative: {
     hook: "216 Claude sessions made a film production studio.",
     problem:

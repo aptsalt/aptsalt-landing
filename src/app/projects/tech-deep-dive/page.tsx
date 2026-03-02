@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-amber",
   accentColor: "#F59E0B",
   heroImage: "/aptsalt-landing/images/tech-deep-dive-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/tech-deep-dive.png",
   narrative: {
     hook: "54 deep-dives. Because understanding compounds.",
     problem:

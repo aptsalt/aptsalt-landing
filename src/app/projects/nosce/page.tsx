@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-cyan",
   accentColor: "#06B6D4",
   heroImage: "/aptsalt-landing/images/nosce-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/nosce.png",
   narrative: {
     hook: "The ancient Greeks carved it above the Oracle at Delphi. Two thousand years later, we still don't have good tools for it.",
     problem:

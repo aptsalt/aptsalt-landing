@@ -26,6 +26,7 @@ export type ProjectData = {
   accentColor: string;
   heroImage?: string;
   screenshots?: string[];
+  architectureDiagram?: string;
   narrative: {
     hook: string;
     problem: string;
@@ -278,6 +279,26 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
           </Reveal>
         </div>
       </section>
+
+      {/* Architecture Diagram */}
+      {project.architectureDiagram && (
+        <section className="py-16 border-t border-border">
+          <div className="max-w-5xl mx-auto px-6">
+            <Reveal>
+              <h2 className="text-xl font-bold mb-6">Architecture</h2>
+              <div className="rounded-xl overflow-hidden border border-border bg-white">
+                <Image
+                  src={project.architectureDiagram}
+                  alt={`${project.name} architecture diagram`}
+                  width={1920}
+                  height={600}
+                  className="w-full h-auto"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="py-20">

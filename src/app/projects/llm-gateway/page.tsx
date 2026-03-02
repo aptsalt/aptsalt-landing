@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-blue",
   accentColor: "#3B82F6",
   heroImage: "/aptsalt-landing/images/llm-gateway-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/llm-gateway.png",
   narrative: {
     hook: "Why choose one LLM provider when you can have all of them — and pay less?",
     problem:

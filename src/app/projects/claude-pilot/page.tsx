@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-orange",
   accentColor: "#F97316",
   heroImage: "/aptsalt-landing/images/claude-pilot-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/claude-pilot.png",
   narrative: {
     hook: "What if your IDE didn't just autocomplete — what if it thought?",
     problem:

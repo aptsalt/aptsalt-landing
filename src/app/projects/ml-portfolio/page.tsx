@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-violet",
   accentColor: "#8B5CF6",
   heroImage: "/aptsalt-landing/images/ml-portfolio-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/ml-portfolio.png",
   narrative: {
     hook: "Everyone fine-tunes. Very few build from the ground up.",
     problem:

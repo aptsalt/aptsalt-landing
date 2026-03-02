@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-emerald",
   accentColor: "#10B981",
   heroImage: "/aptsalt-landing/images/rag-eval-engine-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/rag-eval-engine.png",
   narrative: {
     hook: "If you can't measure retrieval quality, you don't have a RAG system — you have a hope system.",
     problem:

@@ -11,6 +11,7 @@ const project: ProjectData = {
   accentClass: "accent-gold",
   accentColor: "#EAB308",
   heroImage: "/aptsalt-landing/images/enterprise-playground-hero.jpg",
+  architectureDiagram: "/aptsalt-landing/images/diagrams/enterprise-playground.png",
   narrative: {
     hook: "What if your AI didn't just know how to write code — what if it knew your design system?",
     problem:
