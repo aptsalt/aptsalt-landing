@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Deepak Singh Kandari | AI/ML Engineer",
-  description: "Production-grade AI systems. Local-first inference. Zero cloud costs.",
+  title: "Deepak Singh Kandari | Senior Frontend & AI Engineer",
+  description: "13+ years building enterprise applications and AI-first interfaces. Angular, React, Next.js, LLM pipelines, multi-agent systems.",
   openGraph: {
-    title: "Deepak Singh Kandari | AI/ML Engineer",
-    description: "Production-grade AI systems. Local-first inference. Zero cloud costs.",
+    title: "Deepak Singh Kandari | Senior Frontend & AI Engineer",
+    description: "13+ years building enterprise applications and AI-first interfaces across FINRA, Home Depot, CIBC, TD Bank.",
     type: "website",
   },
 };
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
