@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from "react";
+import { useEffect, useRef, useState, useCallback, type ReactNode, type CSSProperties } from "react";
 
-/** Hook: returns 0→1 as element scrolls through viewport */
+/** Hook: returns 0->1 as element scrolls through viewport */
 export function useScrollProgress(offset = 0) {
   const ref = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -26,14 +26,41 @@ export function useScrollProgress(offset = 0) {
   return { ref, progress };
 }
 
+/** Hook: returns current scrollY via rAF — used for hero parallax fade-out */
+export function useHeroParallax() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return scrollY;
+}
+
 /** Parallax layer — moves at a different speed */
 export function ParallaxLayer({
   children,
   speed = 0.5,
+  clamp = false,
   className = "",
 }: {
   children: ReactNode;
   speed?: number;
+  clamp?: boolean;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -47,7 +74,13 @@ export function ParallaxLayer({
       const rect = el.getBoundingClientRect();
       const center = rect.top + rect.height / 2;
       const vh = window.innerHeight;
-      const offset = (center - vh / 2) * speed * -0.3;
+      let offset = (center - vh / 2) * speed * -0.3;
+
+      if (clamp) {
+        const maxOffset = rect.height * 0.3;
+        offset = Math.max(-maxOffset, Math.min(maxOffset, offset));
+      }
+
       el.style.transform = `translate3d(0, ${offset}px, 0)`;
       ticking = false;
     };
@@ -62,12 +95,68 @@ export function ParallaxLayer({
     window.addEventListener("scroll", onScroll, { passive: true });
     update();
     return () => window.removeEventListener("scroll", onScroll);
-  }, [speed]);
+  }, [speed, clamp]);
 
   return (
     <div ref={ref} className={className} style={{ willChange: "transform" }}>
       {children}
     </div>
+  );
+}
+
+/** CountUp — animates a number from 0 to target on scroll entry */
+export function CountUp({
+  target,
+  prefix = "",
+  suffix = "",
+  duration = 1200,
+  className = "",
+  style,
+}: {
+  target: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+  className?: string;
+  style?: CSSProperties;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [value, setValue] = useState(0);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          observer.unobserve(el);
+
+          const start = performance.now();
+          const animate = (now: number) => {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            // ease-out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setValue(Math.round(eased * target));
+            if (progress < 1) requestAnimationFrame(animate);
+          };
+          requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target, duration]);
+
+  return (
+    <span ref={ref} className={className} style={style}>
+      {prefix}{value}{suffix}
+    </span>
   );
 }
 

@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "./components/navbar";
 import { Reveal } from "./components/reveal";
-import { ParallaxLayer } from "./components/parallax";
+import { ParallaxLayer, useHeroParallax, CountUp } from "./components/parallax";
 import { VideoBackground } from "./components/video-background";
 import type { ReactNode } from "react";
 
@@ -287,6 +287,12 @@ const skillCategories = [
    ============================================ */
 
 export default function Home() {
+  const scrollY = useHeroParallax();
+  const vh = typeof window !== "undefined" ? window.innerHeight : 900;
+  const heroProgress = Math.min(scrollY / (vh * 0.6), 1);
+  const heroOpacity = 1 - heroProgress;
+  const heroScale = 1 - heroProgress * 0.08;
+
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -297,21 +303,21 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 grid-bg" />
 
-        {/* Scattered architecture diagram thumbnails — all 12 projects */}
+        {/* Scattered architecture diagram thumbnails — all 12 projects with depth parallax */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {[
-            { slug: "enterprise-playground", x: "-4%", y: "-2%", rot: -6, w: 460 },
-            { slug: "nosce", x: "28%", y: "-1%", rot: 3, w: 420 },
-            { slug: "agenthire", x: "55%", y: "2%", rot: -4, w: 430 },
-            { slug: "animated-webgl-library", x: "82%", y: "-2%", rot: 5, w: 440 },
-            { slug: "mole-world-dashboard", x: "-2%", y: "18%", rot: -4, w: 420 },
-            { slug: "rag-eval-engine", x: "76%", y: "20%", rot: 4, w: 440 },
-            { slug: "llm-gateway", x: "8%", y: "38%", rot: -3, w: 430 },
-            { slug: "claude-dashboard", x: "68%", y: "38%", rot: 5, w: 440 },
-            { slug: "ml-portfolio", x: "-2%", y: "58%", rot: -5, w: 440 },
-            { slug: "tech-deep-dive", x: "72%", y: "58%", rot: 4, w: 440 },
-            { slug: "claude-pilot", x: "18%", y: "74%", rot: -2, w: 430 },
-            { slug: "context-engineering-academy", x: "50%", y: "74%", rot: 3, w: 430 },
+            { slug: "enterprise-playground", x: "-4%", y: "-2%", rot: -6, w: 460, speed: 0.06 },
+            { slug: "nosce", x: "28%", y: "-1%", rot: 3, w: 420, speed: 0.10 },
+            { slug: "agenthire", x: "55%", y: "2%", rot: -4, w: 430, speed: 0.14 },
+            { slug: "animated-webgl-library", x: "82%", y: "-2%", rot: 5, w: 440, speed: 0.08 },
+            { slug: "mole-world-dashboard", x: "-2%", y: "18%", rot: -4, w: 420, speed: 0.18 },
+            { slug: "rag-eval-engine", x: "76%", y: "20%", rot: 4, w: 440, speed: 0.12 },
+            { slug: "llm-gateway", x: "8%", y: "38%", rot: -3, w: 430, speed: 0.20 },
+            { slug: "claude-dashboard", x: "68%", y: "38%", rot: 5, w: 440, speed: 0.16 },
+            { slug: "ml-portfolio", x: "-2%", y: "58%", rot: -5, w: 440, speed: 0.22 },
+            { slug: "tech-deep-dive", x: "72%", y: "58%", rot: 4, w: 440, speed: 0.09 },
+            { slug: "claude-pilot", x: "18%", y: "74%", rot: -2, w: 430, speed: 0.15 },
+            { slug: "context-engineering-academy", x: "50%", y: "74%", rot: 3, w: 430, speed: 0.11 },
           ].map((d) => (
             <div
               key={d.slug}
@@ -319,9 +325,9 @@ export default function Home() {
               style={{
                 left: d.x,
                 top: d.y,
-                transform: `rotate(${d.rot}deg)`,
+                transform: `rotate(${d.rot}deg) translateY(${scrollY * d.speed}px)`,
                 width: d.w,
-                opacity: 0.18,
+                opacity: Math.max(0, 0.18 - heroProgress * 0.18),
               }}
             >
               <Image
@@ -336,12 +342,19 @@ export default function Home() {
           ))}
         </div>
 
-        <ParallaxLayer speed={0.3} className="absolute inset-0 overflow-hidden pointer-events-none">
+        <ParallaxLayer speed={0.5} clamp className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="orb orb-amber w-[500px] h-[500px] top-[10%] left-[15%] animate-breathe" />
           <div className="orb orb-violet w-[400px] h-[400px] top-[30%] right-[10%] animate-breathe" style={{ animationDelay: "3s" }} />
         </ParallaxLayer>
 
-        <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
+        <div
+          className="relative z-10 max-w-3xl mx-auto px-6 text-center"
+          style={{
+            opacity: heroOpacity,
+            transform: `scale(${heroScale})`,
+            willChange: "transform, opacity",
+          }}
+        >
           <div className="animate-fade-up">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 leading-[1.1]">
               Deepak Singh Kandari
@@ -500,15 +513,19 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "12", label: "Production Projects", color: "#8B5CF6" },
-              { value: "RTX 4090", label: "Single GPU", color: "#F59E0B" },
-              { value: "$0", label: "Cloud Costs", color: "#10B981" },
-              { value: "179+", label: "Tests Passing", color: "#3B82F6" },
+              { target: 12, label: "Production Projects", color: "#8B5CF6" },
+              { text: "RTX 4090", label: "Single GPU", color: "#F59E0B" },
+              { text: "$0", label: "Cloud Costs", color: "#10B981" },
+              { target: 179, suffix: "+", label: "Tests Passing", color: "#3B82F6" },
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
                 <div>
                   <div className="text-3xl md:text-4xl font-bold mb-1" style={{ color: stat.color }}>
-                    {stat.value}
+                    {"target" in stat && stat.target !== undefined ? (
+                      <CountUp target={stat.target} suffix={stat.suffix ?? ""} style={{ color: stat.color }} />
+                    ) : (
+                      stat.text
+                    )}
                   </div>
                   <div className="text-xs text-muted font-mono tracking-wider">{stat.label}</div>
                 </div>
@@ -535,7 +552,7 @@ export default function Home() {
               opacity={0.35}
             />
 
-            <ParallaxLayer speed={0.15} className="absolute inset-0 pointer-events-none overflow-hidden">
+            <ParallaxLayer speed={0.4} clamp className="absolute inset-0 pointer-events-none overflow-hidden">
               <div
                 className="orb w-[400px] h-[400px] animate-breathe"
                 style={{
@@ -565,7 +582,7 @@ export default function Home() {
               {/* Project Cards */}
               <div className="grid md:grid-cols-3 gap-5">
                 {act.projects.map((project, i) => (
-                  <Reveal key={project.slug} delay={i * 120}>
+                  <Reveal key={project.slug} delay={i * 120} direction="card">
                     <Link href={`/projects/${project.slug}`}>
                       <div className="group project-card h-full">
                         {project.heroImage && (

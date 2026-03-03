@@ -30,9 +30,7 @@ body {
   overflow-x: hidden;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* scroll-behavior removed — Lenis handles smooth scrolling */
 
 /* ============================================
    KEYFRAMES
@@ -116,6 +114,20 @@ html {
 .reveal-scale.visible {
   opacity: 1;
   transform: scale(1);
+}
+
+.reveal-card {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(4px);
+  transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              filter 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
 }
 
 /* ============================================
@@ -345,4 +357,21 @@ html {
     linear-gradient(rgba(26, 26, 26, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(26, 26, 26, 0.03) 1px, transparent 1px);
   background-size: 60px 60px;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-card {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
 }

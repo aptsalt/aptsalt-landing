@@ -11,7 +11,7 @@ export function Reveal({
   children: ReactNode;
   className?: string;
   delay?: number;
-  direction?: "up" | "left" | "right" | "scale";
+  direction?: "up" | "left" | "right" | "scale" | "card";
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -38,6 +38,7 @@ export function Reveal({
     left: "reveal-left",
     right: "reveal-right",
     scale: "reveal-scale",
+    card: "reveal-card",
   }[direction];
 
   return (
