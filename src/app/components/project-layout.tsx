@@ -101,20 +101,27 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
             </div>
           </div>
         </div>
-
-        {project.heroImage && (
-          <div className="max-w-3xl mx-auto px-6 mt-12">
-            <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border">
-              <Image
-                src={project.heroImage}
-                alt={project.name}
-                fill
-                className="object-cover object-top"
-              />
-            </div>
-          </div>
-        )}
       </section>
+
+      {/* Architecture Diagram */}
+      {project.architectureDiagram && (
+        <section className="py-10">
+          <div className="max-w-5xl mx-auto px-6">
+            <Reveal>
+              <h2 className="text-xl font-bold mb-6">Architecture</h2>
+              <div className="rounded-xl overflow-hidden border border-border bg-white">
+                <Image
+                  src={project.architectureDiagram}
+                  alt={`${project.name} architecture diagram`}
+                  width={1920}
+                  height={800}
+                  className="w-full h-auto"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {/* Divider */}
       <div className="max-w-4xl mx-auto px-6">
@@ -280,19 +287,17 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
         </div>
       </section>
 
-      {/* Architecture Diagram */}
-      {project.architectureDiagram && (
+      {/* Hero Image */}
+      {project.heroImage && (
         <section className="py-16 border-t border-border">
-          <div className="max-w-5xl mx-auto px-6">
+          <div className="max-w-3xl mx-auto px-6">
             <Reveal>
-              <h2 className="text-xl font-bold mb-6">Architecture</h2>
-              <div className="rounded-xl overflow-hidden border border-border bg-white">
+              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-border">
                 <Image
-                  src={project.architectureDiagram}
-                  alt={`${project.name} architecture diagram`}
-                  width={1920}
-                  height={600}
-                  className="w-full h-auto"
+                  src={project.heroImage}
+                  alt={project.name}
+                  fill
+                  className="object-cover object-top"
                 />
               </div>
             </Reveal>

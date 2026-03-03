@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# aptsalt-landing
 
-## Getting Started
+Personal portfolio site showcasing 12 AI/ML engineering projects with comprehensive architecture diagrams, narrative case studies, and live demos.
 
-First, run the development server:
+**Live:** [aptsalt.github.io/aptsalt-landing](https://aptsalt.github.io/aptsalt-landing/)
+
+## Projects
+
+| Project | Focus |
+|---------|-------|
+| Enterprise Playground | QLoRA fine-tuned AI UI generator on RTX 4090 |
+| AgentHire | Multi-agent hiring platform with LangGraph |
+| LLM Gateway | Multi-provider routing with budget control & circuit breakers |
+| RAG Eval Engine | Hybrid retrieval (BM25 + dense) with 5-metric evaluation |
+| ML Portfolio | From-scratch PyTorch: GPT, PPO, BPE tokenizer, RLHF |
+| Nosce | Personal knowledge graph with NLP entity extraction |
+| Tech Deep Dive | Interactive knowledge base — 54 deep-dive articles |
+| Claude Dashboard | Real-time Claude Code observability with 3D canvas |
+| Claude Pilot | Autonomous IDE agent with git safety checkpoints |
+| Animated WebGL | 86+ GPU-accelerated visual scenes (Three.js + GLSL) |
+| Mole World Dashboard | AI film production analytics with 3D globe |
+| Context Engineering Academy | 6 interactive academy tracks with 70+ modules |
+
+## Stack
+
+Next.js 16 (App Router, static export) · React 19 · TypeScript · Tailwind CSS · Lucide Icons
+
+## Architecture Diagrams
+
+Each project page features a comprehensive Excalidraw architecture diagram with:
+- Multi-zoom layout (summary bar → section boundaries → component detail)
+- Evidence artifacts (dark code blocks with real configs, schemas, and metrics)
+- 35-55 elements per diagram
+
+Diagrams are generated via `scripts/generate-diagrams.py` and rendered to PNG with the Excalidraw renderer.
+
+## Development
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
+npm run build      # static export to /out
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Static export deployed to GitHub Pages via the `gh-pages` branch. The `basePath` is set to `/aptsalt-landing`.

@@ -292,15 +292,49 @@ export default function Home() {
       <Navbar />
 
       {/* ============================================
-          HERO — with video background
+          HERO — with architecture diagram thumbnails
           ============================================ */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <VideoBackground
-          src={`${BASE}/videos/hero-prologue.mp4`}
-          poster={`${BASE}/images/ml-portfolio-hero.jpg`}
-          opacity={0.4}
-        />
         <div className="absolute inset-0 grid-bg" />
+
+        {/* Scattered architecture diagram thumbnails — all 12 projects */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          {[
+            { slug: "enterprise-playground", x: "-4%", y: "-2%", rot: -6, w: 460 },
+            { slug: "nosce", x: "28%", y: "-1%", rot: 3, w: 420 },
+            { slug: "agenthire", x: "55%", y: "2%", rot: -4, w: 430 },
+            { slug: "animated-webgl-library", x: "82%", y: "-2%", rot: 5, w: 440 },
+            { slug: "mole-world-dashboard", x: "-2%", y: "18%", rot: -4, w: 420 },
+            { slug: "rag-eval-engine", x: "76%", y: "20%", rot: 4, w: 440 },
+            { slug: "llm-gateway", x: "8%", y: "38%", rot: -3, w: 430 },
+            { slug: "claude-dashboard", x: "68%", y: "38%", rot: 5, w: 440 },
+            { slug: "ml-portfolio", x: "-2%", y: "58%", rot: -5, w: 440 },
+            { slug: "tech-deep-dive", x: "72%", y: "58%", rot: 4, w: 440 },
+            { slug: "claude-pilot", x: "18%", y: "74%", rot: -2, w: 430 },
+            { slug: "context-engineering-academy", x: "50%", y: "74%", rot: 3, w: 430 },
+          ].map((d) => (
+            <div
+              key={d.slug}
+              className="absolute"
+              style={{
+                left: d.x,
+                top: d.y,
+                transform: `rotate(${d.rot}deg)`,
+                width: d.w,
+                opacity: 0.18,
+              }}
+            >
+              <Image
+                src={`${BASE}/images/diagrams/${d.slug}.png`}
+                alt=""
+                width={d.w}
+                height={Math.round(d.w * 0.45)}
+                className="rounded-lg"
+                aria-hidden="true"
+              />
+            </div>
+          ))}
+        </div>
 
         <ParallaxLayer speed={0.3} className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="orb orb-amber w-[500px] h-[500px] top-[10%] left-[15%] animate-breathe" />
