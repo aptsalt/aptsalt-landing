@@ -1003,3 +1003,170 @@ body {
 @media (prefers-reduced-data: reduce) {
   .hero-grain { display: none; }
 }
+
+/* ============================================
+   CORE SHATTER — the engineered hero that
+   fractures on scroll into C1–C4 clusters
+   ============================================ */
+.core-shatter {
+  position: relative;
+  height: 340vh;
+  background:
+    radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--signature) 5%, transparent), transparent 55%),
+    var(--background);
+}
+.core-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.core-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.core-title {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: clamp(11%, 15vh, 17%);
+  z-index: 4;
+  text-align: center;
+  padding: 0 1.5rem;
+  will-change: opacity, transform;
+  pointer-events: none;
+}
+.core-title a,
+.core-title button {
+  pointer-events: auto;
+}
+.core-label {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.core-label-tag {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  font-weight: 700;
+  color: var(--c-accent);
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--c-accent) 38%, transparent);
+  background: color-mix(in srgb, var(--c-accent) 12%, var(--background));
+  box-shadow: 0 6px 20px -10px color-mix(in srgb, var(--c-accent) 60%, transparent);
+}
+.core-label-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.core-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  will-change: opacity;
+}
+.core-cue > span:first-child {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.core-cue-rail {
+  width: 1px;
+  height: 42px;
+  background: linear-gradient(to bottom, var(--signature), transparent);
+  position: relative;
+  overflow: hidden;
+}
+.core-cue-rail::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 1px;
+  height: 40%;
+  background: var(--signature-soft);
+  animation: cue-drop 1.9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+.core-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  z-index: 4;
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--muted);
+  opacity: 0;
+  text-align: center;
+  will-change: opacity;
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .core-shatter { height: 280vh; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .core-shatter { height: auto; min-height: 100svh; }
+  .core-sticky { position: relative; }
+  .core-cue-rail::after { animation: none !important; }
+}
+
+/* Cluster section opener */
+.cluster-section {
+  padding: clamp(4rem, 9vh, 7rem) 0;
+  position: relative;
+}
+.cluster-band {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+.cluster-band .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c-accent) 18%, transparent);
+}
+.cluster-band .tag {
+  font-family: var(--font-mono), monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--c-accent);
+}
+.cluster-headline {
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+  margin-bottom: 0.9rem;
+}
+.cluster-rule {
+  height: 1px;
+  background: linear-gradient(to right, var(--c-accent), transparent);
+  margin: 1.6rem 0 0;
+  opacity: 0.5;
+}
