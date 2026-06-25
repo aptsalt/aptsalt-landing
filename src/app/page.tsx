@@ -698,7 +698,7 @@ export default function Home() {
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="eyebrow">Senior Frontend &amp; AI Engineer — Toronto</span>
           </div>
-          <h1 className="text-[clamp(2.6rem,7vw,5.6rem)] font-bold tracking-[-0.045em] leading-[0.92] mb-5">
+          <h1 className="whitespace-nowrap text-[clamp(1.9rem,6.4vw,5rem)] font-bold tracking-[-0.045em] leading-[0.95] mb-5">
             Deepak Singh Kandari
           </h1>
           <p className="text-[clamp(1.05rem,2.4vw,1.5rem)] text-muted max-w-2xl mx-auto leading-snug mb-8">
