@@ -109,7 +109,7 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 className="proj-hero-object"
-                src={project.heroImage ?? `${BASE}/gen/${project.slug}.png`}
+                src={`${BASE}/gen/${project.slug}.png`}
                 alt={`${project.name} object`}
               />
             </div>
