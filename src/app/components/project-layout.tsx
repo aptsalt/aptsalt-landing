@@ -7,6 +7,8 @@ import { Navbar } from "./navbar";
 import { Reveal } from "./reveal";
 import type { ReactNode } from "react";
 
+const BASE = "/aptsalt-landing";
+
 export type ProjectFeature = {
   icon: ReactNode;
   title: string;
@@ -48,7 +50,7 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
 
       {/* Hero */}
       <section className="pt-32 pb-16 md:pt-40 md:pb-24">
-        <div className="max-w-4xl mx-auto px-6">
+        <div className="max-w-5xl mx-auto px-6">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-10"
@@ -57,47 +59,59 @@ export function ProjectLayout({ project }: { project: ProjectData }) {
             All Projects
           </Link>
 
-          <div className="animate-fade-up">
-            <div
-              className="inline-block px-3 py-1 rounded-full text-xs font-mono tracking-wider mb-6 border"
-              style={{
-                color: project.accentColor,
-                borderColor: `${project.accentColor}30`,
-                backgroundColor: `${project.accentColor}10`,
-              }}
-            >
-              {project.slug.toUpperCase().replace(/-/g, " ")}
-            </div>
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
-              {project.name}
-            </h1>
-
-            <p className="text-xl text-muted max-w-2xl mb-8 leading-relaxed">
-              {project.tagline}
-            </p>
-
-            <div className="flex items-center gap-3">
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
+          <div className="grid md:grid-cols-[1fr_320px] gap-10 md:gap-12 items-center">
+            <div className="animate-fade-up">
+              <div
+                className="inline-block px-3 py-1 rounded-full text-xs font-mono tracking-wider mb-6 border"
+                style={{
+                  color: project.accentColor,
+                  borderColor: `${project.accentColor}30`,
+                  backgroundColor: `${project.accentColor}10`,
+                }}
               >
-                <Github size={15} />
-                View Source
-              </a>
-              {project.liveUrl && (
+                {project.slug.toUpperCase().replace(/-/g, " ")}
+              </div>
+
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
+                {project.name}
+              </h1>
+
+              <p className="text-xl text-muted max-w-2xl mb-8 leading-relaxed">
+                {project.tagline}
+              </p>
+
+              <div className="flex items-center gap-3">
                 <a
-                  href={project.liveUrl}
+                  href={project.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
                 >
-                  <ExternalLink size={15} />
-                  Live Demo
+                  <Github size={15} />
+                  View Source
                 </a>
-              )}
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors"
+                  >
+                    <ExternalLink size={15} />
+                    Live Demo
+                  </a>
+                )}
+              </div>
+            </div>
+
+            <div className="proj-hero-stage" style={{ ["--proj-accent" as string]: project.accentColor }}>
+              <span className="proj-hero-glow" aria-hidden="true" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                className="proj-hero-object"
+                src={project.heroImage ?? `${BASE}/gen/${project.slug}.png`}
+                alt={`${project.name} object`}
+              />
             </div>
           </div>
         </div>

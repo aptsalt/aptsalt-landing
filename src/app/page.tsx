@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "./components/navbar";
 import { Reveal } from "./components/reveal";
-import { CoreShatter, type ClusterMeta } from "./components/core-shatter";
+import { EraTimeline } from "./components/era-timeline";
 import { ClusterFragment } from "./components/cluster-fragment";
 
 const BASE = "/aptsalt-landing";
@@ -471,12 +471,6 @@ const clusters: Cluster[] = [
   },
 ];
 
-const clusterMeta: ClusterMeta[] = clusters.map((c) => ({
-  label: c.label,
-  name: c.name,
-  accent: c.accent,
-}));
-
 const experience = [
   {
     role: "Senior Consultant — Frontend Lead",
@@ -590,24 +584,25 @@ function ProjectCard({ project, accent }: { project: Project; accent?: string })
       className={`group h-full ${project.flagship ? "flagship-card" : "project-card"}`}
       style={accentVars}
     >
-      {/* meaningful "poster" — accent field + concept icon + big slug glyph */}
-      <div className={`relative z-10 overflow-hidden ${project.flagship ? "h-36" : "h-28"}`}>
-        <div className="poster-fallback absolute inset-0" style={accentVars}>
-          <span className="poster-glyph" aria-hidden="true">{project.name.slice(0, 2).toUpperCase()}</span>
-          <div
-            className="absolute left-5 top-5 w-11 h-11 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
-            style={{
-              color: acc,
-              background: "color-mix(in srgb, var(--card-accent) 14%, white)",
-              border: "1px solid color-mix(in srgb, var(--card-accent) 30%, transparent)",
-            }}
-          >
-            {project.icon}
-          </div>
-          {project.flagship && (
-            <span className="absolute top-4 right-4 flagship-ribbon"><Sparkles size={11} /> Flagship</span>
-          )}
+      {/* poster — the project's own object, floating on an accent field */}
+      <div className={`card-poster relative z-10 overflow-hidden ${project.flagship ? "h-48" : "h-40"}`} style={accentVars}>
+        <span className="card-poster-glow" aria-hidden="true" />
+        <span className="card-poster-grid" aria-hidden="true" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img className="card-object" src={`${BASE}/gen/${project.slug}.png`} alt={`${project.name} object`} loading="lazy" />
+        <div
+          className="absolute left-4 top-4 z-20 w-10 h-10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+          style={{
+            color: acc,
+            background: "color-mix(in srgb, var(--card-accent) 14%, white)",
+            border: "1px solid color-mix(in srgb, var(--card-accent) 30%, transparent)",
+          }}
+        >
+          {project.icon}
         </div>
+        {project.flagship && (
+          <span className="absolute top-4 right-4 z-20 flagship-ribbon"><Sparkles size={11} /> Flagship</span>
+        )}
       </div>
 
       <div className={`relative z-10 ${project.flagship ? "p-6" : "p-5"}`}>
@@ -693,11 +688,12 @@ export default function Home() {
       <Navbar />
 
       {/* ============================================
-          HERO — the engineered core that fractures
-          into the four clusters as you scroll
+          HERO — From Silicon to Sentience: a scroll
+          through the history that leads to the work
           ============================================ */}
-      <CoreShatter clusters={clusterMeta}>
-        <div className="max-w-4xl mx-auto">
+      <header className="hero-silicon">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
           <div className="inline-flex items-center gap-2.5 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="eyebrow">Senior Frontend &amp; AI Engineer — Toronto</span>
@@ -707,7 +703,7 @@ export default function Home() {
           </h1>
           <p className="text-[clamp(1.05rem,2.4vw,1.5rem)] text-muted max-w-2xl mx-auto leading-snug mb-8">
             I build <span className="font-medium text-foreground">agentic AI products</span> — and the frontend
-            craft around them. One engineered system, dispersed across {totalProjects} projects.
+            craft around them. One lineage of engineering, dispersed across {totalProjects} projects.
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Magnetic strength={0.3}>
@@ -722,7 +718,19 @@ export default function Home() {
             </Magnetic>
           </div>
         </div>
-      </CoreShatter>
+
+        <div className="hero-era-head relative z-10">
+          <span className="hero-era-kicker">The lineage</span>
+          <h2 className="hero-era-title">From Silicon to Sentience</h2>
+          <p className="hero-era-sub">
+            Every project below stands on this history — the transistor to the autonomous agent.
+          </p>
+        </div>
+        <EraTimeline />
+        <p className="hero-converge relative z-10">
+          Seventy years of engineering converge into four clusters of work.
+        </p>
+      </header>
 
       {/* ============================================
           THE FOUR CLUSTERS — C1 → C4
