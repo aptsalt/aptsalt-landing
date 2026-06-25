@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useRef, useState, type ReactNode, type PointerEvent } from "react";
 import {
   ArrowRight,
+  ArrowUpRight,
   Github,
   Brain,
   Route,
@@ -23,14 +25,183 @@ import {
   Briefcase,
   Award,
   ExternalLink,
+  ShieldCheck,
+  Landmark,
+  GitPullRequest,
+  Target,
+  LineChart,
 } from "lucide-react";
 import { Navbar } from "./components/navbar";
 import { Reveal } from "./components/reveal";
 import { ParallaxLayer, useHeroParallax, CountUp } from "./components/parallax";
 import { VideoBackground } from "./components/video-background";
-import type { ReactNode } from "react";
 
 const BASE = "/aptsalt-landing";
+
+/* ============================================
+   MOTION GUARD — single source of truth for
+   prefers-reduced-motion, SSR-safe + live updates
+   ============================================ */
+
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduced(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+  return reduced;
+}
+
+/* ============================================
+   MAGNETIC — pull an element toward the cursor.
+   Pointer-fine devices only; no-op under reduced motion.
+   ============================================ */
+
+function Magnetic({
+  children,
+  strength = 0.35,
+  className = "",
+}: {
+  children: ReactNode;
+  strength?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const frame = useRef<number>(0);
+
+  const onMove = (e: PointerEvent<HTMLSpanElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    if (e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - (rect.left + rect.width / 2)) * strength;
+    const y = (e.clientY - (rect.top + rect.height / 2)) * strength;
+    cancelAnimationFrame(frame.current);
+    frame.current = requestAnimationFrame(() => {
+      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    });
+  };
+
+  const onLeave = () => {
+    const el = ref.current;
+    if (!el) return;
+    cancelAnimationFrame(frame.current);
+    el.style.transform = "";
+  };
+
+  return (
+    <span
+      ref={ref}
+      onPointerMove={onMove}
+      onPointerLeave={onLeave}
+      className={`magnetic ${className}`}
+    >
+      {children}
+    </span>
+  );
+}
+
+/* ============================================
+   CLIP TEXT REVEAL — line-by-line masked wipe
+   ============================================ */
+
+function ClipReveal({
+  children,
+  className = "",
+  delay = 0,
+  as: As = "span",
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  as?: "span" | "div" | "h1" | "h2" | "p";
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          window.setTimeout(() => el.classList.add("visible"), delay);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.2 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [delay]);
+
+  return (
+    <span ref={ref} className={`clip-reveal ${className}`}>
+      <As>{children}</As>
+    </span>
+  );
+}
+
+/* ============================================
+   MASK LINE — a single oversized headline line that
+   wipes up from behind a clip mask. Staggered by delay.
+   ============================================ */
+
+function MaskLine({
+  children,
+  delay = 0,
+  className = "",
+}: {
+  children: ReactNode;
+  delay?: number;
+  className?: string;
+}) {
+  return (
+    <span className={`mask-line ${className}`}>
+      <span style={{ ["--mask-delay" as string]: `${delay}ms` }}>{children}</span>
+    </span>
+  );
+}
+
+/* ============================================
+   RAIL REVEAL — wrapper with a vertical accent rail
+   that draws itself in when the block enters view
+   ============================================ */
+
+function RailReveal({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.classList.add("visible");
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={`section-rail ${className}`}>
+      {children}
+    </div>
+  );
+}
 
 /* ============================================
    DATA
@@ -45,8 +216,136 @@ type Project = {
   icon: ReactNode;
   tags: string[];
   heroImage?: string;
+  github?: string;
+  live?: string;
 };
 
+type Cluster = {
+  id: string;
+  index: string;
+  title: string;
+  blurb: string;
+  projects: Project[];
+};
+
+/* — Flagship cluster: the new headline work — */
+const flagships: Project[] = [
+  {
+    num: "★",
+    slug: "meridian",
+    name: "Meridian",
+    tagline:
+      "An Angular 21 zoneless/signals agentic banking-policy copilot — governed retrieval, human-in-the-loop, citation-grade answers.",
+    accent: "#4d9fff",
+    icon: <Landmark size={22} />,
+    tags: ["Angular 21", "Signals", "Agentic RAG", "HITL"],
+    github: "https://github.com/aptsalt/meridian",
+    live: "https://aptsalt.github.io/meridian/",
+  },
+  {
+    num: "★",
+    slug: "alpha-advisor",
+    name: "ALPHA Advisor",
+    tagline:
+      "A LangGraph agentic-RAG wealth-advisory copilot — interrupt-driven HITL, governance, knowledge graph, and a hash-chained audit trail.",
+    accent: "#34d399",
+    icon: <LineChart size={22} />,
+    tags: ["LangGraph", "Agentic RAG", "Governance", "Audit Trail"],
+    github: "https://github.com/aptsalt/alpha-advisor",
+    live: "https://aptsalt.github.io/alpha-advisor/",
+  },
+];
+
+/* — New supporting flagships, grouped into the narrative clusters below — */
+const beacon: Project = {
+  num: "F3",
+  slug: "beacon",
+  name: "Beacon",
+  tagline: "FastAPI agentic RAG with a React/TS streaming chat surface and inline, click-through citations.",
+  accent: "#f59e0b",
+  icon: <Search size={20} />,
+  tags: ["FastAPI", "Agentic RAG", "Streaming", "Citations"],
+  github: "https://github.com/aptsalt/beacon",
+};
+
+const gitSentry: Project = {
+  num: "F4",
+  slug: "git-sentry",
+  name: "Git Sentry",
+  tagline: "An AI git guardian — four agents review every diff locally before it ever reaches CI.",
+  accent: "#ef4444",
+  icon: <GitPullRequest size={20} />,
+  tags: ["4 Agents", "Ollama", "CI Guard", "Next.js"],
+  github: "https://github.com/aptsalt/git-sentry",
+};
+
+const acma: Project = {
+  num: "F5",
+  slug: "acma",
+  name: "ACMA",
+  tagline: "Agentic code-modernization assistant — reads legacy, plans the migration, ships the refactor.",
+  accent: "#a78bfa",
+  icon: <ShieldCheck size={20} />,
+  tags: ["Agents", "Modernization", "Refactor", "Planning"],
+  github: "https://github.com/aptsalt/acma",
+};
+
+const parameterGolf: Project = {
+  num: "F6",
+  slug: "parameter-golf",
+  name: "Parameter Golf",
+  tagline: "Win the most with the fewest parameters — a from-scratch experiment in lean model configuration.",
+  accent: "#ec4899",
+  icon: <Target size={20} />,
+  tags: ["From-Scratch", "Optimization", "Eval", "Lean"],
+  github: "https://github.com/aptsalt/parameter-golf",
+};
+
+const naviklab: Project = {
+  num: "F7",
+  slug: "naviklab",
+  name: "NavikLab",
+  tagline: "A live SaaS that scores Claude Code sessions in real time — auth, Stripe, and a cognitive API moat.",
+  accent: "#06b6d4",
+  icon: <Activity size={20} />,
+  tags: ["Live SaaS", "Stripe", "Cognitive API", "Next.js"],
+  github: "https://github.com/aptsalt/naviklab",
+  live: "https://naviklab.com",
+};
+
+/* — Narrative clusters: the new flagships, woven into a coherent story — */
+const clusters: Cluster[] = [
+  {
+    id: "agentic-products",
+    index: "C1",
+    title: "Agentic Products",
+    blurb: "Beyond the two flagships above — more end-to-end agentic copilots for regulated domains, with governed retrieval and answers you can audit.",
+    projects: [beacon],
+  },
+  {
+    id: "ai-infrastructure",
+    index: "C2",
+    title: "AI Infrastructure",
+    blurb: "The guardrails and pipes around the models — agents that review code, modernize systems, and run on consumer hardware.",
+    projects: [gitSentry, acma],
+  },
+  {
+    id: "from-scratch-ml",
+    index: "C3",
+    title: "From-Scratch ML",
+    blurb: "Not wrappers. Building and tuning the model itself, from first principles.",
+    projects: [parameterGolf],
+  },
+  {
+    id: "live-products",
+    index: "C4",
+    title: "Live Products",
+    blurb: "Shipped, paid, and in production — real users, real revenue, real uptime.",
+    projects: [naviklab],
+  },
+];
+
+/* — Original four acts (the foundational body of work) — */
 const acts: {
   number: string;
   title: string;
@@ -283,150 +582,450 @@ const skillCategories = [
 ];
 
 /* ============================================
+   PROJECT CARD — image OR elegant accent poster
+   ============================================ */
+
+function ProjectCard({ project, flagship = false }: { project: Project; flagship?: boolean }) {
+  const accentVars = { ["--card-accent" as string]: project.accent };
+  const cardRef = useRef<HTMLDivElement>(null);
+  const tiltFrame = useRef<number>(0);
+
+  const handlePointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    const el = cardRef.current;
+    if (!el) return;
+    if (e.pointerType !== "mouse") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    const tilt = flagship ? 4 : 2.5;
+    cancelAnimationFrame(tiltFrame.current);
+    tiltFrame.current = requestAnimationFrame(() => {
+      el.style.setProperty("--mx", `${px * 100}%`);
+      el.style.setProperty("--my", `${py * 100}%`);
+      el.style.transform = `translateY(${flagship ? -8 : -6}px) perspective(1000px) rotateX(${(0.5 - py) * tilt}deg) rotateY(${(px - 0.5) * tilt}deg)`;
+    });
+  };
+
+  const handlePointerLeave = () => {
+    const el = cardRef.current;
+    if (!el) return;
+    cancelAnimationFrame(tiltFrame.current);
+    el.style.transform = "";
+  };
+
+  return (
+    <Link href={`/projects/${project.slug}`} className="block h-full">
+      <div
+        ref={cardRef}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        className={`group h-full ${flagship ? "flagship-card" : "project-card"}`}
+        style={accentVars}
+      >
+        {/* Poster — real image if available, otherwise an accent gradient treatment */}
+        <div className={`relative z-10 overflow-hidden ${flagship ? "h-52" : "h-40"}`}>
+          {project.heroImage ? (
+            <>
+              <Image
+                src={project.heroImage}
+                alt={project.name}
+                fill
+                className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
+            </>
+          ) : (
+            <div className="poster-fallback absolute inset-0" style={accentVars}>
+              <span className="poster-glyph" aria-hidden="true">{project.num}</span>
+              <div
+                className="absolute left-5 top-5 w-11 h-11 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
+                style={{
+                  color: project.accent,
+                  background: "color-mix(in srgb, var(--card-accent) 12%, white)",
+                  border: "1px solid color-mix(in srgb, var(--card-accent) 30%, transparent)",
+                }}
+              >
+                {project.icon}
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/60" />
+            </div>
+          )}
+
+          <div className="absolute top-3 left-3 flex items-center gap-2">
+            {flagship && (
+              <span className="flagship-ribbon">
+                <Sparkles size={11} /> Flagship
+              </span>
+            )}
+            {project.heroImage && (
+              <span
+                className="text-[11px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm"
+                style={{ color: project.accent }}
+              >
+                {project.num}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className={`relative z-10 ${flagship ? "p-6 md:p-7" : "p-5"}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <div style={{ color: project.accent }}>{project.icon}</div>
+            <h3 className={`font-semibold ${flagship ? "text-lg" : "text-base"}`}>{project.name}</h3>
+          </div>
+          <p className="text-sm text-muted leading-relaxed mb-4">{project.tagline}</p>
+
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2 py-0.5 rounded-full text-[11px] font-mono border text-muted"
+                style={{ borderColor: "color-mix(in srgb, var(--card-accent) 24%, var(--border))" }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex items-center gap-1.5 text-xs font-medium text-muted group-hover:text-foreground transition-colors">
+              View details
+              <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-200" />
+            </span>
+
+            {(project.github || project.live) && (
+              <span className="flex items-center gap-2">
+                {project.github && (
+                  <span
+                    role="link"
+                    tabIndex={0}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(project.github, "_blank", "noopener,noreferrer");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(project.github, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="repo-pill"
+                    aria-label={`${project.name} on GitHub (opens in new tab)`}
+                  >
+                    <Github size={12} /> Code
+                  </span>
+                )}
+                {project.live && (
+                  <span
+                    role="link"
+                    tabIndex={0}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(project.live, "_blank", "noopener,noreferrer");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(project.live, "_blank", "noopener,noreferrer");
+                      }
+                    }}
+                    className="repo-pill"
+                    style={{
+                      color: project.accent,
+                      borderColor: "color-mix(in srgb, var(--card-accent) 45%, var(--border))",
+                    }}
+                    aria-label={`${project.name} live site (opens in new tab)`}
+                  >
+                    Live <ArrowUpRight size={12} />
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* ============================================
    PAGE
    ============================================ */
 
 export default function Home() {
   const scrollY = useHeroParallax();
-  const vh = typeof window !== "undefined" ? window.innerHeight : 900;
-  const heroProgress = Math.min(scrollY / (vh * 0.6), 1);
-  const heroOpacity = 1 - heroProgress;
-  const heroScale = 1 - heroProgress * 0.08;
+  const reducedMotion = usePrefersReducedMotion();
+  const [vh, setVh] = useState(900);
+  useEffect(() => {
+    const onResize = () => setVh(window.innerHeight);
+    onResize();
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+  const heroProgress = reducedMotion ? 0 : Math.min(scrollY / (vh * 0.7), 1);
+
+  // Mount-driven entrance for the cinematic hero (next-frame to ensure transition).
+  const [heroIn, setHeroIn] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setHeroIn(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
   return (
     <div className="min-h-screen">
+      <a href="#projects" className="skip-link">Skip to projects</a>
       <Navbar />
 
       {/* ============================================
-          HERO — with architecture diagram thumbnails
+          HERO — cinematic Higgsfield film + oversized
+          editorial type with masked line reveals
           ============================================ */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 grid-bg" />
-
-        {/* Scattered architecture diagram thumbnails — all 12 projects with depth parallax */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          {[
-            { slug: "enterprise-playground", x: "-4%", y: "-2%", rot: -6, w: 460, speed: 0.06 },
-            { slug: "nosce", x: "28%", y: "-1%", rot: 3, w: 420, speed: 0.10 },
-            { slug: "agenthire", x: "55%", y: "2%", rot: -4, w: 430, speed: 0.14 },
-            { slug: "animated-webgl-library", x: "82%", y: "-2%", rot: 5, w: 440, speed: 0.08 },
-            { slug: "mole-world-dashboard", x: "-2%", y: "18%", rot: -4, w: 420, speed: 0.18 },
-            { slug: "rag-eval-engine", x: "76%", y: "20%", rot: 4, w: 440, speed: 0.12 },
-            { slug: "llm-gateway", x: "8%", y: "38%", rot: -3, w: 430, speed: 0.20 },
-            { slug: "claude-dashboard", x: "68%", y: "38%", rot: 5, w: 440, speed: 0.16 },
-            { slug: "ml-portfolio", x: "-2%", y: "58%", rot: -5, w: 440, speed: 0.22 },
-            { slug: "tech-deep-dive", x: "72%", y: "58%", rot: 4, w: 440, speed: 0.09 },
-            { slug: "claude-pilot", x: "18%", y: "74%", rot: -2, w: 430, speed: 0.15 },
-            { slug: "context-engineering-academy", x: "50%", y: "74%", rot: 3, w: 430, speed: 0.11 },
-          ].map((d) => (
-            <div
-              key={d.slug}
-              className="absolute"
-              style={{
-                left: d.x,
-                top: d.y,
-                transform: `rotate(${d.rot}deg) translateY(${scrollY * d.speed}px)`,
-                width: d.w,
-                opacity: Math.max(0, 0.18 - heroProgress * 0.18),
-              }}
-            >
-              <Image
-                src={`${BASE}/images/diagrams/${d.slug}.png`}
-                alt=""
-                width={d.w}
-                height={Math.round(d.w * 0.45)}
-                className="rounded-lg"
-                aria-hidden="true"
-              />
-            </div>
-          ))}
-        </div>
-
-        <ParallaxLayer speed={0.5} clamp className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="orb orb-amber w-[500px] h-[500px] top-[10%] left-[15%] animate-breathe" />
-          <div className="orb orb-violet w-[400px] h-[400px] top-[30%] right-[10%] animate-breathe" style={{ animationDelay: "3s" }} />
-        </ParallaxLayer>
-
-        <div
-          className="relative z-10 max-w-3xl mx-auto px-6 text-center"
+      <section className={`hero-cinematic ${heroIn ? "hero-in" : ""}`}>
+        {/* The film — Higgsfield prologue, full-bleed, slow parallax drift */}
+        <video
+          className="hero-film"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+          tabIndex={-1}
+          poster={`${BASE}/videos/start-hero-prologue.png`}
           style={{
-            opacity: heroOpacity,
-            transform: `scale(${heroScale})`,
+            transform: `scale(${1.08 + heroProgress * 0.06})`,
+            willChange: heroProgress < 1 ? "transform" : "auto",
+          }}
+        >
+          <source src={`${BASE}/videos/hero-prologue.mp4`} type="video/mp4" />
+        </video>
+
+        <div className="hero-scrim" aria-hidden="true" />
+        <div className="hero-grain" aria-hidden="true" />
+        <div className="hero-frame" aria-hidden="true" />
+
+        {/* Content — drifts up + fades as you scroll past the first screen */}
+        <div
+          className="hero-content"
+          style={{
+            opacity: 1 - heroProgress,
+            transform: `translateY(${heroProgress * -60}px)`,
             willChange: "transform, opacity",
           }}
         >
-          <div className="animate-fade-up">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-5 leading-[1.1]">
-              Deepak Singh Kandari
+          <div className="max-w-6xl mx-auto px-6 md:px-10 w-full">
+            {/* Eyebrow */}
+            <div
+              className="hero-rise inline-flex items-center gap-2.5 mb-8"
+              style={{ ["--rise-delay" as string]: "100ms" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="hero-eyebrow">Senior Frontend &amp; AI Engineer — Toronto</span>
+            </div>
+
+            {/* Oversized editorial display type, masked line-by-line */}
+            <h1 className="display-line text-[clamp(3.4rem,11vw,9.5rem)] mb-7">
+              <MaskLine delay={120}>Deepak Singh</MaskLine>
+              <MaskLine delay={240} className="-mt-[0.04em]">
+                <span className="sig-underline">Kandari</span>
+              </MaskLine>
             </h1>
 
-            <p className="text-xl md:text-2xl text-muted mb-3">
-              Senior Frontend & AI Engineer
+            {/* Sub-headline — a second editorial register */}
+            <div className="text-[clamp(1.35rem,3.4vw,2.6rem)] font-light leading-[1.04] tracking-[-0.02em] text-[#f7f4ee] mb-9 max-w-3xl">
+              <MaskLine delay={420}>
+                I build <span className="display-italic">agentic AI products</span>
+              </MaskLine>
+              <MaskLine delay={520}>and the frontend craft around them.</MaskLine>
+            </div>
+
+            <p
+              className="hero-rise hero-lede text-base md:text-lg max-w-xl mb-10 leading-relaxed"
+              style={{ ["--rise-delay" as string]: "720ms" }}
+            >
+              From Angular-21 banking copilots to LangGraph advisory systems — shipped
+              end to end across FINRA, Home Depot, CIBC, and TD Bank.
             </p>
 
-            <p className="text-base text-muted/70 max-w-xl mx-auto mb-6 leading-relaxed">
-              13+ years building enterprise applications and AI-first interfaces
-              across FINRA, Home Depot, CIBC, and TD Bank.
-            </p>
-
-            <div className="flex items-center justify-center gap-3 text-sm text-muted mb-8">
+            <div
+              className="hero-rise flex items-center gap-5 text-sm hero-meta mb-9"
+              style={{ ["--rise-delay" as string]: "820ms" }}
+            >
               <span className="inline-flex items-center gap-1.5">
                 <MapPin size={14} />
                 Toronto, Canada
               </span>
-              <span className="text-border">|</span>
+              <span className="w-px h-3.5 bg-white/20" />
               <span className="inline-flex items-center gap-1.5">
                 <Briefcase size={14} />
                 Open to opportunities
               </span>
             </div>
 
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <a
-                href="mailto:deepchand89k@gmail.com"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
-              >
-                <Mail size={15} />
-                Get in touch
-              </a>
-              <a
-                href="https://linkedin.com/in/deepaksinghkandari"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors bg-background/60 backdrop-blur-sm"
-              >
-                <Linkedin size={15} />
-                LinkedIn
-              </a>
-              <a
-                href="https://github.com/AptSalt"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors bg-background/60 backdrop-blur-sm"
-              >
-                <Github size={15} />
-                GitHub
-              </a>
+            <div
+              className="hero-rise flex items-center gap-3 flex-wrap"
+              style={{ ["--rise-delay" as string]: "900ms" }}
+            >
+              <Magnetic strength={0.3}>
+                <a
+                  href="#projects"
+                  className="hero-btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-colors"
+                >
+                  View the work
+                  <ArrowRight size={15} aria-hidden="true" />
+                </a>
+              </Magnetic>
+              <Magnetic strength={0.25}>
+                <a
+                  href="mailto:deepchand89k@gmail.com"
+                  className="hero-btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-colors"
+                >
+                  <Mail size={15} aria-hidden="true" />
+                  Get in touch
+                </a>
+              </Magnetic>
+              <Magnetic strength={0.25}>
+                <a
+                  href="https://github.com/AptSalt"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hero-btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-colors"
+                >
+                  <Github size={15} aria-hidden="true" />
+                  GitHub
+                </a>
+              </Magnetic>
             </div>
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="w-5 h-8 rounded-full border-2 border-border flex items-start justify-center p-1">
-            <div className="w-1 h-2 rounded-full bg-muted/40 animate-scroll-hint" />
+        {/* Scroll cue */}
+        <div
+          className="hero-scroll-cue"
+          style={{ opacity: 1 - heroProgress * 2 }}
+        >
+          <span className="cue-label">Scroll</span>
+          <span className="cue-rail" />
+        </div>
+      </section>
+
+      {/* ============================================
+          FLAGSHIPS — headline pieces (Meridian + ALPHA)
+          ============================================ */}
+      <section id="projects" className="py-24 relative overflow-hidden">
+        <VideoBackground src={`${BASE}/videos/hero-manifesto.mp4`} opacity={0.28} />
+
+        <ParallaxLayer speed={0.4} clamp className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div
+            className="orb w-[460px] h-[460px] top-[6%] left-[-6%] animate-breathe"
+            style={{ background: "radial-gradient(circle, #4d9fff14, transparent 70%)" }}
+          />
+          <div
+            className="orb w-[420px] h-[420px] bottom-[4%] right-[-5%] animate-breathe"
+            style={{ background: "radial-gradient(circle, #34d39914, transparent 70%)", animationDelay: "2.5s" }}
+          />
+        </ParallaxLayer>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <Reveal>
+            <RailReveal className="mb-14 pl-6">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="chapter-kicker">Chapter 01</span>
+                <span className="eyebrow">Flagship Work</span>
+              </div>
+              <ClipReveal as="h2" className="text-4xl md:text-6xl font-bold tracking-[-0.03em] leading-[1.02] mb-5">
+                Agentic systems, built like products.
+              </ClipReveal>
+              <p className="text-muted max-w-2xl text-lg leading-relaxed">
+                Two headline copilots for regulated finance — one in Angular 21, one in
+                LangGraph — each with governed retrieval, human-in-the-loop control, and
+                answers you can audit line by line.
+              </p>
+            </RailReveal>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+            {flagships.map((project, i) => (
+              <Reveal key={project.slug} delay={i * 160} direction="card">
+                <ParallaxLayer speed={i === 0 ? 0.18 : 0.34} clamp>
+                  <ProjectCard project={project} flagship />
+                </ParallaxLayer>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ============================================
-          DISCURIA — Featured Project
+          NARRATIVE CLUSTERS — the new repos, grouped
+          with a sticky chapter header per cluster
+          ============================================ */}
+      <section className="py-12 relative overflow-hidden">
+        <ParallaxLayer speed={0.3} clamp className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div
+            className="orb w-[520px] h-[520px] top-[12%] right-[-8%] animate-breathe"
+            style={{ background: "radial-gradient(circle, #a78bfa12, transparent 70%)", animationDelay: "1.5s" }}
+          />
+        </ParallaxLayer>
+
+        <div className="max-w-6xl mx-auto px-6 relative z-10">
+          <Reveal>
+            <RailReveal className="mb-16 pl-6">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="chapter-kicker">Chapter 02</span>
+                <span className="eyebrow">The Body of New Work</span>
+              </div>
+              <ClipReveal as="h2" className="text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.04] mb-4">
+                Five clusters. One trajectory.
+              </ClipReveal>
+              <p className="text-muted max-w-2xl text-lg leading-relaxed">
+                From agentic products to live revenue — each cluster is a deliberate step
+                up the stack, not a pile of repos.
+              </p>
+            </RailReveal>
+          </Reveal>
+
+          {clusters.map((cluster, ci) => (
+            <div key={cluster.id}>
+              {ci > 0 && <div className="cluster-tie" />}
+              <div className="cluster-grid">
+                <Reveal direction="left">
+                  <div className="cluster-aside">
+                    <div className="cluster-numeral mb-4">{cluster.index}</div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="eyebrow">{cluster.title}</span>
+                    </div>
+                    <p className="text-muted leading-relaxed">{cluster.blurb}</p>
+                    <div className="mt-5 h-px w-16 bg-border" />
+                    <p className="mt-3 text-xs font-mono text-muted/70 tracking-wider">
+                      {cluster.projects.length} project{cluster.projects.length > 1 ? "s" : ""}
+                    </p>
+                  </div>
+                </Reveal>
+
+                <div className={`grid gap-5 ${cluster.projects.length === 1 ? "sm:grid-cols-1 max-w-md" : "sm:grid-cols-2"}`}>
+                  {cluster.projects.map((project, i) => (
+                    <Reveal key={`${cluster.id}-${project.slug}`} delay={i * 120} direction="card">
+                      <ProjectCard project={project} />
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ============================================
+          DISCURIA — Featured Live Product
           ============================================ */}
       <section className="py-16 relative overflow-hidden">
-        <VideoBackground
-          src={`${BASE}/videos/hero-discuria.mp4`}
-          opacity={0.3}
-        />
+        <VideoBackground src={`${BASE}/videos/hero-discuria.mp4`} opacity={0.3} />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <Reveal>
             <a
@@ -437,9 +1036,7 @@ export default function Home() {
             >
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                  <div className="text-xs font-mono tracking-widest uppercase text-muted mb-3">
-                    Featured — Live Product
-                  </div>
+                  <div className="eyebrow mb-3">Featured — Live Product</div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-3 group-hover:underline underline-offset-4 decoration-2">
                     Discuria
                   </h2>
@@ -466,7 +1063,9 @@ export default function Home() {
       <section id="experience" className="py-20">
         <div className="max-w-3xl mx-auto px-6">
           <Reveal>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">Experience</h2>
+            <ClipReveal as="h2" className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-2">
+              Experience
+            </ClipReveal>
             <p className="text-muted mb-12">13+ years across financial services, retail, and AI platforms.</p>
           </Reveal>
 
@@ -506,16 +1105,13 @@ export default function Home() {
           STATS BAR — with video background
           ============================================ */}
       <section className="py-16 relative overflow-hidden">
-        <VideoBackground
-          src={`${BASE}/videos/hero-stats.mp4`}
-          opacity={0.35}
-        />
+        <VideoBackground src={`${BASE}/videos/hero-stats.mp4`} opacity={0.35} />
         <div className="max-w-6xl mx-auto px-6 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { target: 12, label: "Production Projects", color: "#8B5CF6" },
+              { target: 26, suffix: "+", label: "Production Projects", color: "#4d9fff" },
               { text: "RTX 4090", label: "Single GPU", color: "#F59E0B" },
-              { text: "$0", label: "Cloud Costs", color: "#10B981" },
+              { text: "$0", label: "Cloud Costs", color: "#34d399" },
               { target: 179, suffix: "+", label: "Tests Passing", color: "#3B82F6" },
             ].map((stat, i) => (
               <Reveal key={stat.label} delay={i * 100}>
@@ -539,18 +1135,33 @@ export default function Home() {
       <div className="max-w-6xl mx-auto px-6"><div className="h-px bg-border" /></div>
 
       {/* ============================================
-          FOUR ACTS — Narrative with video backgrounds
+          FOUR ACTS — Foundational body of work
           ============================================ */}
+      <section className="pt-24 pb-4 relative">
+        <div className="max-w-6xl mx-auto px-6">
+          <Reveal>
+            <RailReveal className="pl-6">
+              <div className="flex items-center gap-4 mb-5">
+                <span className="chapter-kicker">Chapter 03</span>
+                <span className="eyebrow">The Foundation — Four Acts</span>
+              </div>
+              <ClipReveal as="h2" className="text-4xl md:text-5xl font-bold tracking-[-0.03em] leading-[1.02] mb-4">
+                From understanding to expression.
+              </ClipReveal>
+              <p className="text-muted max-w-2xl text-lg leading-relaxed">
+                A portfolio that taught me the stack from the inside out — learning the
+                fundamentals, building the infrastructure, giving AI agency, and turning it
+                all into art and curriculum.
+              </p>
+            </RailReveal>
+          </Reveal>
+        </div>
+      </section>
+
       {acts.map((act, actIndex) => (
-        <div key={act.number}>
-          <section
-            id={actIndex === 0 ? "projects" : undefined}
-            className="py-24 relative overflow-hidden"
-          >
-            <VideoBackground
-              src={`${BASE}/videos/hero-act-${actIndex + 1}.mp4`}
-              opacity={0.35}
-            />
+        <div key={act.number} className="cv-auto">
+          <section className="py-24 relative overflow-hidden">
+            <VideoBackground src={`${BASE}/videos/hero-act-${actIndex + 1}.mp4`} opacity={0.35} />
 
             <ParallaxLayer speed={0.4} clamp className="absolute inset-0 pointer-events-none overflow-hidden">
               <div
@@ -569,12 +1180,12 @@ export default function Home() {
               <Reveal>
                 <div className="mb-16">
                   <div className="flex items-center gap-4 mb-4">
-                    <span className="text-xs font-mono tracking-[0.3em] text-muted/50 uppercase">
-                      Act {act.number}
-                    </span>
+                    <span className="eyebrow tracking-[0.3em]">Act {act.number}</span>
                     <div className="act-line flex-1" />
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-3">{act.title}</h2>
+                  <ClipReveal as="h2" className="text-4xl md:text-5xl font-bold tracking-[-0.02em] mb-3">
+                    {act.title}
+                  </ClipReveal>
                   <p className="text-muted max-w-xl">{act.subtitle}</p>
                 </div>
               </Reveal>
@@ -583,55 +1194,7 @@ export default function Home() {
               <div className="grid md:grid-cols-3 gap-5">
                 {act.projects.map((project, i) => (
                   <Reveal key={project.slug} delay={i * 120} direction="card">
-                    <Link href={`/projects/${project.slug}`}>
-                      <div className="group project-card h-full">
-                        {project.heroImage && (
-                          <div className="relative h-40 overflow-hidden">
-                            <Image
-                              src={project.heroImage}
-                              alt={project.name}
-                              fill
-                              className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
-                            <div className="absolute top-3 left-3">
-                              <span
-                                className="text-[11px] font-mono tracking-wider px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm"
-                                style={{ color: project.accent }}
-                              >
-                                {project.num}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="p-5">
-                          <div className="flex items-center gap-2 mb-2">
-                            <div style={{ color: project.accent }}>{project.icon}</div>
-                            <h3 className="text-base font-semibold">{project.name}</h3>
-                          </div>
-                          <p className="text-sm text-muted leading-relaxed mb-4">
-                            {project.tagline}
-                          </p>
-
-                          <div className="flex flex-wrap gap-1.5 mb-4">
-                            {project.tags.map((tag) => (
-                              <span
-                                key={tag}
-                                className="px-2 py-0.5 rounded-full text-[11px] font-mono border border-border text-muted"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-
-                          <div className="flex items-center gap-1.5 text-xs font-medium text-muted group-hover:text-foreground transition-colors">
-                            View details
-                            <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform duration-200" />
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
+                    <ProjectCard project={project} />
                   </Reveal>
                 ))}
               </div>
@@ -660,7 +1223,9 @@ export default function Home() {
       <section id="skills" className="py-20">
         <div className="max-w-4xl mx-auto px-6">
           <Reveal>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">Technical Skills</h2>
+            <ClipReveal as="h2" className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-2">
+              Technical Skills
+            </ClipReveal>
             <p className="text-muted mb-12">Across the full stack — from pixel-perfect UIs to GPU inference.</p>
           </Reveal>
 
@@ -668,7 +1233,7 @@ export default function Home() {
             {skillCategories.map((cat, i) => (
               <Reveal key={cat.label} delay={i * 100}>
                 <div>
-                  <h3 className="text-xs font-mono tracking-widest uppercase text-muted mb-4">{cat.label}</h3>
+                  <h3 className="eyebrow mb-4">{cat.label}</h3>
                   <div className="flex flex-wrap gap-2">
                     {cat.skills.map((skill) => (
                       <span key={skill} className="skill-tag">{skill}</span>
@@ -690,7 +1255,9 @@ export default function Home() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-6">
           <Reveal>
-            <h2 className="text-2xl md:text-3xl font-bold mb-12">Certifications</h2>
+            <ClipReveal as="h2" className="text-3xl md:text-4xl font-bold tracking-[-0.02em] mb-12">
+              Certifications
+            </ClipReveal>
           </Reveal>
 
           <Reveal delay={100}>
@@ -723,34 +1290,35 @@ export default function Home() {
           CONTACT — with video background
           ============================================ */}
       <section id="contact" className="py-24 relative overflow-hidden">
-        <VideoBackground
-          src={`${BASE}/videos/hero-epilogue.mp4`}
-          opacity={0.3}
-        />
+        <VideoBackground src={`${BASE}/videos/hero-epilogue.mp4`} opacity={0.3} />
         <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
           <Reveal>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Let&apos;s work together
-            </h2>
+            <ClipReveal as="h2" className="text-4xl md:text-5xl font-bold tracking-[-0.03em] mb-4">
+              Let&apos;s build something.
+            </ClipReveal>
             <p className="text-muted mb-10 max-w-lg mx-auto leading-relaxed">
               Looking for a senior engineer who can lead frontend architecture and build
-              AI-powered product features end to end? Let&apos;s talk.
+              agentic AI product features end to end? Let&apos;s talk.
             </p>
 
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <a
-                href="mailto:deepchand89k@gmail.com"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium bg-foreground text-background hover:opacity-90 transition-opacity"
-              >
-                <Mail size={16} />
-                deepchand89k@gmail.com
-              </a>
-              <a
-                href="tel:+17789277935"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors bg-background/60 backdrop-blur-sm"
-              >
-                778-927-7935
-              </a>
+              <Magnetic strength={0.3}>
+                <a
+                  href="mailto:deepchand89k@gmail.com"
+                  className="cta-solid inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium bg-foreground text-background transition-transform"
+                >
+                  <Mail size={16} aria-hidden="true" />
+                  deepchand89k@gmail.com
+                </a>
+              </Magnetic>
+              <Magnetic strength={0.25}>
+                <a
+                  href="tel:+17789277935"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium border border-border hover:border-foreground/30 transition-colors bg-background/60 backdrop-blur-sm"
+                >
+                  778-927-7935
+                </a>
+              </Magnetic>
             </div>
           </Reveal>
         </div>
@@ -768,7 +1336,7 @@ export default function Home() {
               <a href="https://linkedin.com/in/deepaksinghkandari" target="_blank" rel="noopener noreferrer" className="opacity-50 hover:opacity-100 transition-opacity"><Linkedin size={18} /></a>
               <a href="mailto:deepchand89k@gmail.com" className="opacity-50 hover:opacity-100 transition-opacity"><Mail size={18} /></a>
             </div>
-            <div className="text-xs opacity-40">Built with Next.js & Tailwind</div>
+            <div className="text-xs opacity-40">Built with Next.js &amp; Tailwind</div>
           </div>
         </div>
       </footer>
