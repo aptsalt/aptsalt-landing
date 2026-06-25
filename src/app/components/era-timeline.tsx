@@ -60,7 +60,7 @@ export function EraTimeline() {
             <div className="era-stage">
               <span className="era-glow" aria-hidden="true" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="era-object" src={`${BASE}/gen/${era.key}.png`} alt={era.title} loading={i < 2 ? "eager" : "lazy"} />
+              <img className="era-object" src={`${BASE}/gen/${era.key}.webp`} alt={era.title} loading={i < 2 ? "eager" : "lazy"} />
             </div>
             <span className="era-dot" aria-hidden="true" />
             <div className="era-meta">

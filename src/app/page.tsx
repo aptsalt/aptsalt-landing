@@ -589,7 +589,7 @@ function ProjectCard({ project, accent }: { project: Project; accent?: string })
         <span className="card-poster-glow" aria-hidden="true" />
         <span className="card-poster-grid" aria-hidden="true" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="card-object" src={`${BASE}/gen/${project.slug}.png`} alt={`${project.name} object`} loading="lazy" />
+        <img className="card-object" src={`${BASE}/gen/${project.slug}.webp`} alt={`${project.name} object`} loading="lazy" />
         <div
           className="absolute left-4 top-4 z-20 w-10 h-10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
           style={{
