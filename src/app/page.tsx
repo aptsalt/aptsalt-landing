@@ -40,6 +40,7 @@ import {
 import { Navbar } from "./components/navbar";
 import { Reveal } from "./components/reveal";
 import { CoreShatter, type ClusterMeta } from "./components/core-shatter";
+import { ClusterFragment } from "./components/cluster-fragment";
 
 const BASE = "/aptsalt-landing";
 
@@ -554,8 +555,9 @@ const skillCategories = [
 /* ============================================
    PROJECT CARD — clean, accent-driven, meaningful
    ============================================ */
-function ProjectCard({ project }: { project: Project }) {
-  const accentVars = { ["--card-accent" as string]: project.accent };
+function ProjectCard({ project, accent }: { project: Project; accent?: string }) {
+  const acc = accent ?? project.accent;
+  const accentVars = { ["--card-accent" as string]: acc };
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltFrame = useRef<number>(0);
 
@@ -595,7 +597,7 @@ function ProjectCard({ project }: { project: Project }) {
           <div
             className="absolute left-5 top-5 w-11 h-11 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110"
             style={{
-              color: project.accent,
+              color: acc,
               background: "color-mix(in srgb, var(--card-accent) 14%, white)",
               border: "1px solid color-mix(in srgb, var(--card-accent) 30%, transparent)",
             }}
@@ -650,7 +652,7 @@ function ProjectCard({ project }: { project: Project }) {
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.open(project.live, "_blank", "noopener,noreferrer"); }}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); window.open(project.live, "_blank", "noopener,noreferrer"); } }}
                   className="repo-pill"
-                  style={{ color: project.accent, borderColor: "color-mix(in srgb, var(--card-accent) 45%, var(--border))" }}
+                  style={{ color: acc, borderColor: "color-mix(in srgb, var(--card-accent) 45%, var(--border))" }}
                   aria-label={`${project.name} live site (opens in new tab)`}
                 >
                   Live <ArrowUpRight size={12} />
@@ -733,23 +735,31 @@ export default function Home() {
           style={{ ["--c-accent" as string]: cluster.accent }}
         >
           <div className="max-w-6xl mx-auto px-6">
-            <Reveal>
-              <div className="max-w-3xl mb-12">
-                <div className="cluster-band">
-                  <span className="dot" />
-                  <span className="tag">{cluster.label}</span>
-                  <span className="eyebrow">{cluster.name}</span>
+            <div className="cluster-head">
+              <Reveal>
+                <div className="max-w-2xl">
+                  <div className="cluster-band">
+                    <span className="dot" />
+                    <span className="tag">{cluster.label}</span>
+                    <span className="eyebrow">{cluster.name}</span>
+                  </div>
+                  <ClipReveal as="h2" className="cluster-headline">{cluster.headline}</ClipReveal>
+                  <p className="text-muted text-lg leading-relaxed">{cluster.blurb}</p>
+                  <p className="mt-4 text-xs font-mono text-muted/70 tracking-wider">
+                    {cluster.projects.length} projects · disassembled from the core
+                  </p>
+                  <div className="cluster-rule" />
                 </div>
-                <ClipReveal as="h2" className="cluster-headline">{cluster.headline}</ClipReveal>
-                <p className="text-muted text-lg leading-relaxed">{cluster.blurb}</p>
-                <div className="cluster-rule" />
+              </Reveal>
+              <div className="cluster-frag-wrap" aria-hidden="true">
+                <ClusterFragment accent={cluster.accent} />
               </div>
-            </Reveal>
+            </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {cluster.projects.map((project, i) => (
                 <Reveal key={project.slug} delay={i * 70} direction="card">
-                  <ProjectCard project={project} />
+                  <ProjectCard project={project} accent={cluster.accent} />
                 </Reveal>
               ))}
             </div>

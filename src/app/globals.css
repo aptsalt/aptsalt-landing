@@ -1132,10 +1132,35 @@ body {
   .core-cue-rail::after { animation: none !important; }
 }
 
-/* Cluster section opener */
+/* Cluster section opener — each cluster is its own color world */
 .cluster-section {
   padding: clamp(4rem, 9vh, 7rem) 0;
   position: relative;
+  border-top: 1px solid color-mix(in srgb, var(--c-accent) 24%, var(--border));
+  background:
+    radial-gradient(70% 45% at 100% 0%, color-mix(in srgb, var(--c-accent) 7%, transparent), transparent 62%),
+    radial-gradient(60% 50% at 0% 100%, color-mix(in srgb, var(--c-accent) 4%, transparent), transparent 60%);
+}
+.cluster-head {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+@media (min-width: 1024px) {
+  .cluster-head { grid-template-columns: 1.45fr 1fr; gap: 3rem; }
+}
+.cluster-frag-wrap { display: flex; justify-content: center; }
+.cluster-fragment {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 1 / 1;
+  display: block;
+}
+@media (max-width: 1023px) {
+  .cluster-frag-wrap { order: -1; }
+  .cluster-fragment { max-width: 230px; }
 }
 .cluster-band {
   display: inline-flex;
